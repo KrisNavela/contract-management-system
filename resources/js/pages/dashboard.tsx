@@ -22,7 +22,7 @@ export default function Dashboard() {
                         Welcome back, {auth.user.name}
                     </h1>
                     <p className="mt-1 text-sm text-emerald-100">
-                        Here’s a summary of your system activity!
+                        Here'’'s a summary of your system activity.
                     </p>
                 </div>
 
