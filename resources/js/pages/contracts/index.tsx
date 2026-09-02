@@ -400,12 +400,21 @@ export default function Index({
                                         </TableCell>
 
                                         <TableCell className="text-right">
-                                            <Link
-                                                href={`/contracts/${contract.id}`}
-                                                className="text-sm font-medium text-blue-600 hover:underline"
-                                            >
-                                                View
-                                            </Link>
+                                            {isBranch && contract.status === 'RETURNED' ? (
+                                                <Link
+                                                    href={`/contracts/${contract.id}/edit`}
+                                                    className="text-sm font-medium text-yellow-600 hover:underline"
+                                                >
+                                                    Edit / Resubmit
+                                                </Link>
+                                            ) : (
+                                                <Link
+                                                    href={`/contracts/${contract.id}`}
+                                                    className="text-sm font-medium text-blue-600 hover:underline"
+                                                >
+                                                    View
+                                                </Link>
+                                            )}
                                         </TableCell>
                                     </TableRow>
                                 )

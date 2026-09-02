@@ -219,19 +219,30 @@ class ContractController extends Controller
     {
         $request->validate([
             'contract_type' => 'required|in:NEW,RENEWAL',
-            'file' => 'required|file|mimes:pdf,doc,docx,jpg,jpeg,png,webp|max:5120',
+            'file' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png,webp|max:5120',
         ]);
 
-        //dd($request->all());
+        $wasReturned = $contract->status === 'RETURNED';
 
-        // Update Contract Type
+        // Update contract details
         $contract->update([
             'contract_type' => $request->contract_type,
-            'status' => 'SUBMITTED',
+            'status' => $wasReturned ? 'SUBMITTED' : $contract->status,
         ]);
 
-        // If new file uploaded, store it
+        // If a new file was uploaded
         if ($request->hasFile('file')) {
+
+            // Delete existing contract files
+            foreach ($contract->files as $oldFile) {
+                if (Storage::disk('public')->exists($oldFile->file_path)) {
+                    Storage::disk('public')->delete($oldFile->file_path);
+                }
+
+                $oldFile->delete();
+            }
+
+            // Store replacement file
             $path = $request->file('file')->store('contracts', 'public');
 
             $contract->files()->create([
@@ -241,9 +252,24 @@ class ContractController extends Controller
             ]);
         }
 
+        // Add audit trail when returned contract is resubmitted
+        if ($wasReturned) {
+            $contract->remarks()->create([
+                'user_id' => auth()->id(),
+                'role' => auth()->user()->role,
+                'action' => 'RESUBMITTED',
+                'remarks' => 'Returned contract was updated and resubmitted by branch.',
+            ]);
+        }
+
         return redirect()
             ->route('contracts.show', $contract)
-            ->with('success', 'Contract updated successfully.');
+            ->with(
+                'success',
+                $wasReturned
+                    ? 'Contract updated and resubmitted successfully.'
+                    : 'Contract updated successfully.'
+            );
     }
 
     public function destroyFile(ContractFile $contractFile)
