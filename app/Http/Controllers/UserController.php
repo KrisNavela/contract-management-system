@@ -37,7 +37,7 @@ class UserController extends Controller
         $data = $request->validate([
             'role' => [
                 'nullable', // ✅ allow empty
-                'in:BRANCH,REVIEWER,INITIAL_VERIFIER,FINAL_VERIFIER,INITIAL_APPROVER,FINAL_APPROVER,ADMIN',
+                'in:BRANCH,REVIEWER,INITIAL_VERIFIER,FINAL_VERIFIER,ADMIN',
             ],
         ]);
 

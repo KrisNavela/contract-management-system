@@ -99,8 +99,9 @@ class User extends Authenticatable
     public function isContractApprover(): bool
     {
         return in_array($this->role, [
-            'INITIAL_APPROVER',
-            'FINAL_APPROVER',
+            'REVIEWER',
+            'INITIAL_VERIFIER',
+            'FINAL_VERIFIER',
         ]);
     }
 

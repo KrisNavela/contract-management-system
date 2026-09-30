@@ -14,9 +14,9 @@ export default function AppSidebarLayout({
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset className="min-h-screen bg-background">
+      <SidebarInset className="min-h-screen bg-slate-50/70">
         <AppSidebarHeader breadcrumbs={breadcrumbs} />
-        <main className="p-6">
+        <main className="min-h-[calc(100vh-4rem)] p-4 md:p-6 lg:p-8">
           {children}
         </main>
       </SidebarInset>

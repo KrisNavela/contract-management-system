@@ -6,12 +6,9 @@ use Laravel\Fortify\Features;
 
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\ContractApprovalController;
-use App\Http\Controllers\ApprovalQueueController;
 use App\Http\Controllers\ReviewerQueueController;
 use App\Http\Controllers\InitialVerifierQueueController;
 use App\Http\Controllers\FinalVerifierQueueController;
-use App\Http\Controllers\InitialApproverQueueController;
-use App\Http\Controllers\FinalApproverQueueController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LegalDocumentController;
@@ -112,16 +109,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         [FinalVerifierQueueController::class, 'index']
     )->middleware('role:FINAL_VERIFIER,ADMIN')
      ->name('queue.final-verifier');
-
-    Route::get('/queue/initial-approver',
-        [InitialApproverQueueController::class, 'index']
-    )->middleware('role:INITIAL_APPROVER,ADMIN')
-     ->name('queue.initial-approver');
-
-    Route::get('/queue/final-approver',
-        [FinalApproverQueueController::class, 'index']
-    )->middleware('role:FINAL_APPROVER,ADMIN')
-     ->name('queue.final-approver');
 
 
     /*

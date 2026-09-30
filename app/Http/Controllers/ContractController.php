@@ -43,6 +43,11 @@ class ContractController extends Controller
             $query->where('status', $request->status);
         }
 
+        /* ================= FILTER: PENDING CONTRACTS ================= */
+        if ($request->boolean('pending')) {
+            $query->whereNotIn('status', ['APPROVED', 'RETURNED', 'REJECTED']);
+        }
+
         /* ================= FILTER: EXECUTION STATUS ================= */
         if ($request->filled('execution')) {
             if ($request->execution === 'uploaded') {
@@ -117,6 +122,7 @@ class ContractController extends Controller
             'filters' => $request->only([
                 'transaction_no',
                 'status',
+                'pending',
                 'execution',
                 'branch_id',
             ]),
@@ -309,9 +315,7 @@ class ContractController extends Controller
         'SUBMITTED'            => 'REVIEWED',
         'REVIEWED'             => 'INITIAL_VERIFICATION',
         'INITIAL_VERIFICATION' => 'FINAL_VERIFICATION',
-        'FINAL_VERIFICATION'   => 'INITIAL_APPROVAL',
-        'INITIAL_APPROVAL'     => 'FINAL_APPROVAL',
-        'FINAL_APPROVAL'       => 'APPROVED',
+        'FINAL_VERIFICATION'   => 'APPROVED',
     ];
 
     /**
@@ -321,8 +325,6 @@ class ContractController extends Controller
         'REVIEWER'         => 'SUBMITTED',
         'INITIAL_VERIFIER' => 'REVIEWED',
         'FINAL_VERIFIER'   => 'INITIAL_VERIFICATION',
-        'INITIAL_APPROVER' => 'INITIAL_APPROVAL',
-        'FINAL_APPROVER'   => 'FINAL_APPROVAL',
     ];
 
     /**
@@ -331,7 +333,7 @@ class ContractController extends Controller
     public function action(Request $request, Contract $contract)
     {
         $request->validate([
-            'action'  => 'required|in:FORWARD,RETURN,REJECT,APPROVE',
+            'action'  => 'required|in:FORWARD,RETURN,REJECT',
             'remarks' => 'nullable|string',
         ]);
 
@@ -371,14 +373,6 @@ class ContractController extends Controller
                     $nextStatus = self::FLOW[$status];
                 }
 
-                break;
-
-            case 'APPROVE':
-
-                if ($status !== 'FINAL_APPROVAL') {
-                    abort(400, 'Only final approver can approve.');
-                }
-                $nextStatus = 'APPROVED';
                 break;
 
             case 'RETURN':
@@ -430,6 +424,7 @@ class ContractController extends Controller
         // 🔒 Role + Status Guard
         if (
             auth()->user()->role !== 'BRANCH' ||
+            $contract->uploaded_by !== auth()->id() ||
             $contract->status !== 'APPROVED'
         ) {
             abort(403);

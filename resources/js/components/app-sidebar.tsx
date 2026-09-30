@@ -71,28 +71,12 @@ export function AppSidebar() {
         )
     }
 
-    if (role === 'INITIAL_APPROVER') {
-        contractChildren.push(
-            { title: 'All Contracts', href: '/contracts/all' },
-            { title: 'Initial Approval', href: '/queue/initial-approver' }
-        )
-    }
-
-    if (role === 'FINAL_APPROVER') {
-        contractChildren.push(
-            { title: 'All Contracts', href: '/contracts/all' },
-            { title: 'Final Approval', href: '/queue/final-approver' }
-        )
-    }
-
     if (role === 'ADMIN') {
         contractChildren.push(
             { title: 'All Contracts', href: '/contracts/all' },
             { title: 'Reviewer Queue', href: '/queue/reviewer' },
             { title: 'Initial Verification', href: '/queue/initial-verifier' },
             { title: 'Final Verification', href: '/queue/final-verifier' },
-            { title: 'Initial Approval', href: '/queue/initial-approver' },
-            { title: 'Final Approval', href: '/queue/final-approver' }
             
         )
     }
@@ -156,10 +140,14 @@ export function AppSidebar() {
 
     return (
         <Sidebar collapsible="icon" variant="inset">
-            <SidebarHeader>
+            <SidebarHeader className="border-b border-sidebar-border/70 px-2 py-3">
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild>
+                        <SidebarMenuButton
+                            size="lg"
+                            asChild
+                            className="rounded-xl hover:bg-emerald-50"
+                        >
                             <Link href="/dashboard" prefetch>
                                 <AppLogo />
                             </Link>
@@ -168,11 +156,11 @@ export function AppSidebar() {
                 </SidebarMenu>
             </SidebarHeader>
 
-            <SidebarContent>
+            <SidebarContent className="py-3">
                 <NavMain items={mainNavItems} />
             </SidebarContent>
 
-            <SidebarFooter>
+            <SidebarFooter className="border-t border-sidebar-border/70 p-2">
                 <NavFooter items={[]} className="mt-auto" />
                 <NavUser />
             </SidebarFooter>

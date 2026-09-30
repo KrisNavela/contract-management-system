@@ -37,12 +37,6 @@ class AppServiceProvider extends ServiceProvider
                     'FINAL_VERIFIER' => [
                         'INITIAL_VERIFICATION',
                     ],
-                    'INITIAL_APPROVER' => [
-                        'FINAL_VERIFICATION',
-                    ],
-                    'FINAL_APPROVER' => [
-                        'INITIAL_APPROVAL',
-                    ],
                 ];
 
                 if (isset($contractRoleStatusMap[$user->role])) {
@@ -87,12 +81,6 @@ class AppServiceProvider extends ServiceProvider
                     ],
                     'FINAL_VERIFIER' => [
                         'INITIAL_VERIFICATION',
-                    ],
-                    'INITIAL_APPROVER' => [
-                        'FINAL_VERIFICATION',
-                    ],
-                    'FINAL_APPROVER' => [
-                        'INITIAL_APPROVAL',
                     ],
                 ];
 
@@ -199,8 +187,6 @@ class AppServiceProvider extends ServiceProvider
                     'REVIEWER'         => ['SUBMITTED'],
                     'INITIAL_VERIFIER' => ['REVIEWED'],
                     'FINAL_VERIFIER'   => ['INITIAL_VERIFICATION'],
-                    'INITIAL_APPROVER' => ['FINAL_VERIFICATION'],
-                    'FINAL_APPROVER'   => ['INITIAL_APPROVAL'],
                 ];
 
                 if (isset($roleStatusMap[$user->role])) {

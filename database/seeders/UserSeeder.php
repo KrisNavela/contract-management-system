@@ -32,16 +32,6 @@ class UserSeeder extends Seeder
                 'role' => 'FINAL_VERIFIER',
             ],
             [
-                'name' => 'Evan Initial Approver',
-                'email' => 'init.approver@demo.com',
-                'role' => 'INITIAL_APPROVER',
-            ],
-            [
-                'name' => 'Fiona Final Approver',
-                'email' => 'final.approver@demo.com',
-                'role' => 'FINAL_APPROVER',
-            ],
-            [
                 'name' => 'Admin User',
                 'email' => 'admin@demo.com',
                 'role' => 'ADMIN',

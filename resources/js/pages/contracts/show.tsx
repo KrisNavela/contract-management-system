@@ -41,6 +41,7 @@ interface Remark {
 interface Contract {
     id: number;
     transaction_no: string;
+    uploaded_by: number;
     status: string;
     contract_type: string;
     created_at: string;
@@ -76,14 +77,6 @@ export default function Show({ contract }: Props) {
             title: 'Final Verifier Queue',
             href: '/queue/final-verifier',
         },
-        INITIAL_APPROVER: {
-            title: 'Initial Approver Queue',
-            href: '/queue/initial-approver',
-        },
-        FINAL_APPROVER: {
-            title: 'Final Approver Queue',
-            href: '/queue/final-approver',
-        },
         BRANCH: {
             title: 'Contracts',
             href: '/contracts',
@@ -113,8 +106,6 @@ export default function Show({ contract }: Props) {
         REVIEWER: 'SUBMITTED',
         INITIAL_VERIFIER: 'REVIEWED',
         FINAL_VERIFIER: 'INITIAL_VERIFICATION',
-        INITIAL_APPROVER: 'FINAL_VERIFICATION',
-        FINAL_APPROVER: 'INITIAL_APPROVAL',
     };
 
     const canApprove =
@@ -144,8 +135,6 @@ export default function Show({ contract }: Props) {
         REVIEWER: '/queue/reviewer',
         INITIAL_VERIFIER: '/queue/initial-verifier',
         FINAL_VERIFIER: '/queue/final-verifier',
-        INITIAL_APPROVER: '/queue/initial-approver',
-        FINAL_APPROVER: '/queue/final-approver',
         BRANCH: '/contracts',
     };
 
@@ -156,7 +145,7 @@ export default function Show({ contract }: Props) {
             <Head title={`Contract ${contract.transaction_no}`} />
 
             {/* ✅ WIDE CONTAINER */}
-            <div className="mx-auto w-full max-w-screen-xl px-4 space-y-8">
+            <div className="mx-auto w-full max-w-screen-2xl space-y-7">
 
                 {/* ================= FLASH ================= 
                 {flash?.success && showFlash && (
@@ -177,12 +166,16 @@ export default function Show({ contract }: Props) {
                 )} */}
 
                 {/* ================= HEADER ================= */}
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
                     <div>
-                        <h1 className="text-2xl font-semibold">
+                        <div className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-emerald-700">
+                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />
+                            Contract workflow
+                        </div>
+                        <h1 className="text-3xl font-semibold tracking-tight text-slate-950">
                             Contract Details
                         </h1>
-                        <p className="text-sm text-gray-600">
+                        <p className="mt-1 text-sm text-slate-500">
                             Review contract information and take action
                         </p>
                     </div>
@@ -191,7 +184,7 @@ export default function Show({ contract }: Props) {
                         href={
                             BACK_LINK_BY_ROLE[auth?.user?.role] ?? '/dashboard'
                         }
-                        className="rounded-md border px-4 py-2 text-sm hover:bg-gray-50"
+                        className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-sm transition hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700"
                     >
                         Back
                     </Link>
@@ -207,19 +200,22 @@ export default function Show({ contract }: Props) {
                 <div className="grid gap-6 lg:grid-cols-3">
 
                     {/* ================= SUMMARY ================= */}
-                    <div className="rounded-xl border bg-white p-6 shadow-sm">
+                    <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
+                        <p className="mb-5 text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+                            Contract overview
+                        </p>
                         <dl className="space-y-4">
                             <div>
-                                <dt className="text-xs uppercase text-gray-500">
+                                    <dt className="text-xs uppercase tracking-wide text-slate-400">
                                     Transaction Number
                                 </dt>
-                                <dd className="text-lg font-semibold">
+                                <dd className="text-xl font-semibold tracking-tight text-slate-900">
                                     {contract.transaction_no}
                                 </dd>
                             </div>
 
                             <div>
-                                <dt className="text-xs uppercase text-gray-500">
+                                    <dt className="text-xs uppercase tracking-wide text-slate-400">
                                     Status
                                 </dt>
                                 <dd>
@@ -232,7 +228,7 @@ export default function Show({ contract }: Props) {
                                                     ? 'bg-red-100 text-red-700'
                                                     : contract.status === 'RETURNED'
                                                     ? 'bg-yellow-100 text-yellow-700'
-                                                    : 'bg-blue-100 text-blue-700'
+                                                    : 'bg-slate-100 text-slate-700'
                                             }`}
                                     >
                                         {contract.status.replace('_', ' ')}
@@ -242,7 +238,7 @@ export default function Show({ contract }: Props) {
 
 
                             <div>
-                                <dt className="text-xs uppercase text-gray-500">
+                                    <dt className="text-xs uppercase tracking-wide text-slate-400">
                                     Contract Type
                                 </dt>
                                 <dd className="text-sm font-medium">
@@ -251,7 +247,7 @@ export default function Show({ contract }: Props) {
                             </div>
 
                             <div>
-                                <dt className="text-xs uppercase text-gray-500">
+                                    <dt className="text-xs uppercase tracking-wide text-slate-400">
                                     Date Uploaded
                                 </dt>
                                 <dd className="text-sm">
@@ -265,8 +261,11 @@ export default function Show({ contract }: Props) {
 
                     {/* ================= APPROVAL ACTION ================= */}
                     {canAct ? (
-                        <div className="rounded-xl border bg-white p-6 shadow-sm lg:col-span-2">
-                            <h2 className="mb-3 text-sm font-semibold">
+                        <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm lg:col-span-2">
+                            <p className="mb-1 text-xs font-semibold uppercase tracking-[0.16em] text-emerald-700">
+                                Next step
+                            </p>
+                            <h2 className="mb-4 text-lg font-semibold tracking-tight text-slate-900">
                                 {auth?.user?.role === 'BRANCH'
                                     ? 'Resubmit Contract'
                                     : 'Approval Action'}
@@ -275,7 +274,7 @@ export default function Show({ contract }: Props) {
                             <ContractApprovalActions contract={contract} />
                         </div>
                     ) : (
-                        <div className="rounded-xl border bg-gray-50 p-6 text-sm text-gray-500 lg:col-span-2">
+                        <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50/70 p-6 text-sm text-slate-500 lg:col-span-2">
                             Approval details will appear here when this contract
                             reaches your stage.
                         </div>
@@ -464,6 +463,7 @@ export default function Show({ contract }: Props) {
 
                 {/* ================= EXECUTION UPLOAD ================= */}
                 {auth?.user?.role === 'BRANCH' &&
+                    auth?.user?.id === contract.uploaded_by &&
                     contract.status === 'APPROVED' &&
                     !contract.execution_file_path && (
                         <div className="rounded-xl border bg-white p-6 shadow-sm">

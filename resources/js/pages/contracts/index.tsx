@@ -29,8 +29,6 @@ type ContractStatus =
     | 'REVIEWED'
     | 'INITIAL_VERIFICATION'
     | 'FINAL_VERIFICATION'
-    | 'INITIAL_APPROVAL'
-    | 'FINAL_APPROVAL'
     | 'APPROVED'
     | 'REJECTED'
     | 'RETURNED'
@@ -87,6 +85,7 @@ interface Props {
     filters: {
         transaction_no?: string
         status?: string
+        pending?: string
         execution?: string
         branch_id?: string
     }
@@ -96,12 +95,6 @@ interface Props {
     }[]
 }
 
-/* ================= BREADCRUMBS ================= */
-
-const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'Contracts', href: '/contracts' },
-]
-
 /* ================= STATUS COLORS ================= */
 
 const statusColor: Record<ContractStatus, string> = {
@@ -110,8 +103,6 @@ const statusColor: Record<ContractStatus, string> = {
     REVIEWED: 'bg-indigo-100 text-indigo-700',
     INITIAL_VERIFICATION: 'bg-indigo-100 text-indigo-700',
     FINAL_VERIFICATION: 'bg-purple-100 text-purple-700',
-    INITIAL_APPROVAL: 'bg-yellow-100 text-yellow-700',
-    FINAL_APPROVAL: 'bg-orange-100 text-orange-700',
     APPROVED: 'bg-green-100 text-green-700',
     REJECTED: 'bg-red-100 text-red-700',
     RETURNED: 'bg-gray-200 text-gray-700',
@@ -128,6 +119,16 @@ export default function Index({
     const authUser = page.props?.auth?.user
     const isBranch = authUser?.role === 'BRANCH'
     const [search, setSearch] = useState(filters?.transaction_no ?? '')
+
+    const breadcrumbTitle = filters?.pending === '1'
+        ? 'Pending Contracts'
+        : filters?.status
+        ? `${filters.status.replaceAll('_', ' ')} Contracts`
+        : 'Contracts'
+
+    const breadcrumbs: BreadcrumbItem[] = [
+        { title: breadcrumbTitle, href: '/contracts' },
+    ]
 
     useEffect(() => {
         const delay = setTimeout(() => {
@@ -209,8 +210,6 @@ export default function Index({
                         <option value="REVIEWED">Reviewed</option>
                         <option value="INITIAL_VERIFICATION">Initial Verification</option>
                         <option value="FINAL_VERIFICATION">Final Verification</option>
-                        <option value="INITIAL_APPROVAL">Initial Approval</option>
-                        <option value="FINAL_APPROVAL">Final Approval</option>
                         <option value="APPROVED">Approved</option>
                         <option value="RETURNED">Returned</option>
                         <option value="REJECTED">Rejected</option>

@@ -16,11 +16,7 @@ export const approvalSteps = [
         label: 'Final Verification',
     },
     {
-        key: 'INITIAL_APPROVAL',
-        label: 'Initial Approval',
-    },
-    {
         key: 'APPROVED',
-        label: 'Final Approval',
+        label: 'Approved',
     },
 ];

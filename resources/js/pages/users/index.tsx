@@ -63,8 +63,6 @@ export default function UsersIndex({
         'REVIEWER',
         'INITIAL_VERIFIER',
         'FINAL_VERIFIER',
-        'INITIAL_APPROVER',
-        'FINAL_APPROVER',
         'ADMIN',
     ]
 

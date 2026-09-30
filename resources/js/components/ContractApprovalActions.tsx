@@ -8,10 +8,8 @@ type Role =
     | 'REVIEWER'
     | 'INITIAL_VERIFIER'
     | 'FINAL_VERIFIER'
-    | 'INITIAL_APPROVER'
-    | 'FINAL_APPROVER'
 
-type ActionType = 'forward' | 'approve' | 'return' | 'reject'
+type ActionType = 'forward' | 'return' | 'reject'
 
 interface Props {
     contract: {
@@ -48,19 +46,6 @@ export default function ContractApprovalActions({ contract }: Props) {
             { label: 'Return to Reviewer', value: 'REVIEWER' },
             { label: 'Return to Initial Verifier', value: 'INITIAL_VERIFIER' },
         ],
-        INITIAL_APPROVER: [
-            { label: 'Return to Branch', value: 'BRANCH' },
-            { label: 'Return to Reviewer', value: 'REVIEWER' },
-            { label: 'Return to Initial Verifier', value: 'INITIAL_VERIFIER' },
-            { label: 'Return to Final Verifier', value: 'FINAL_VERIFIER' },
-        ],
-        FINAL_APPROVER: [
-            { label: 'Return to Branch', value: 'BRANCH' },
-            { label: 'Return to Reviewer', value: 'REVIEWER' },
-            { label: 'Return to Initial Verifier', value: 'INITIAL_VERIFIER' },
-            { label: 'Return to Final Verifier', value: 'FINAL_VERIFIER' },
-            { label: 'Return to Initial Approver', value: 'INITIAL_APPROVER' },
-        ],
     }
 
     /* ================= SUBMIT FUNCTION ================= */
@@ -91,12 +76,11 @@ export default function ContractApprovalActions({ contract }: Props) {
                         { title: string; desc: string }
                     > = {
                         forward: {
-                            title: 'Forwarded',
-                            desc: 'The contract has been forwarded to the next stage.',
-                        },
-                        approve: {
-                            title: 'Approved',
-                            desc: 'The contract has been approved successfully.',
+                            title: role === 'FINAL_VERIFIER' ? 'Verified' : 'Forwarded',
+                            desc:
+                                role === 'FINAL_VERIFIER'
+                                    ? 'Final verification is complete. The requestor can now upload the execution document.'
+                                    : 'The contract has been forwarded to the next stage.',
                         },
                         return: {
                             title: 'Returned',
@@ -133,7 +117,7 @@ export default function ContractApprovalActions({ contract }: Props) {
         )
     }
 
-    const isFinalApprover = role === 'FINAL_APPROVER'
+    const isFinalVerifier = role === 'FINAL_VERIFIER'
 
     /* ================= UI ================= */
 
@@ -157,31 +141,15 @@ export default function ContractApprovalActions({ contract }: Props) {
 
             {/* ===== ACTION BUTTONS ===== */}
             <div className="flex flex-wrap gap-3">
-                {/* APPROVE (Final Approver Only) */}
-                {isFinalApprover && (
-                    <button
-                        type="button"
-                        onClick={() => submit('approve')}
-                        disabled={form.processing}
-                        className="rounded-md bg-green-600 px-4 py-2 text-sm text-white 
-                        hover:bg-green-700 cursor-pointer disabled:opacity-50"
-                    >
-                        Approve
-                    </button>
-                )}
-
-                {/* FORWARD (Everyone Except Final Approver) */}
-                {!isFinalApprover && (
-                    <button
-                        type="button"
-                        onClick={() => submit('forward')}
-                        disabled={form.processing}
-                        className="rounded-md bg-blue-600 px-4 py-2 text-sm text-white 
-                        hover:bg-blue-700 cursor-pointer disabled:opacity-50"
-                    >
-                        Forward
-                    </button>
-                )}
+                <button
+                    type="button"
+                    onClick={() => submit('forward')}
+                    disabled={form.processing}
+                    className="rounded-md bg-blue-600 px-4 py-2 text-sm text-white
+                    hover:bg-blue-700 cursor-pointer disabled:opacity-50"
+                >
+                    {isFinalVerifier ? 'Verify' : 'Forward'}
+                </button>
 
                 {/* DYNAMIC RETURN BUTTONS */}
                 {returnTargets[role]?.map((target) => (

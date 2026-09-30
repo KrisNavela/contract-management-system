@@ -146,8 +146,6 @@ export default function All({ contracts, filters, branches }: Props) {
                         <option value="SUBMITTED">Submitted</option>
                         <option value="INITIAL_VERIFICATION">Initial Verification</option>
                         <option value="FINAL_VERIFICATION">Final Verification</option>
-                        <option value="INITIAL_APPROVAL">Initial Approval</option>
-                        <option value="FINAL_APPROVAL">Final Approval</option>
                         <option value="APPROVED">Approved</option>
                         <option value="RETURNED">Returned</option>
                         <option value="REJECTED">Rejected</option>

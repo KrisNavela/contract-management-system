@@ -18,8 +18,6 @@ class ContractApprovalController extends Controller
         'REVIEWER'         => 'SUBMITTED',
         'INITIAL_VERIFIER' => 'REVIEWED',
         'FINAL_VERIFIER'   => 'INITIAL_VERIFICATION',
-        'INITIAL_APPROVER' => 'FINAL_VERIFICATION',
-        'FINAL_APPROVER'   => 'INITIAL_APPROVAL',
     ];
 
     /**
@@ -29,8 +27,6 @@ class ContractApprovalController extends Controller
         'SUBMITTED'            => 'REVIEWER',
         'REVIEWED'             => 'INITIAL_VERIFIER',
         'INITIAL_VERIFICATION' => 'FINAL_VERIFIER',
-        'FINAL_VERIFICATION'   => 'INITIAL_APPROVER',
-        'INITIAL_APPROVAL'     => 'FINAL_APPROVER',
     ];
 
     /**
@@ -41,7 +37,6 @@ class ContractApprovalController extends Controller
         'REVIEWER'         => 'SUBMITTED',
         'INITIAL_VERIFIER' => 'REVIEWED',
         'FINAL_VERIFIER'   => 'INITIAL_VERIFICATION',
-        'INITIAL_APPROVER' => 'FINAL_VERIFICATION',
     ];
 
     /**
@@ -64,26 +59,12 @@ class ContractApprovalController extends Controller
             'INITIAL_VERIFIER'
         ],
 
-        'INITIAL_APPROVER' => [
-            'BRANCH',
-            'REVIEWER',
-            'INITIAL_VERIFIER',
-            'FINAL_VERIFIER'
-        ],
-
-        'FINAL_APPROVER' => [
-            'BRANCH',
-            'REVIEWER',
-            'INITIAL_VERIFIER',
-            'FINAL_VERIFIER',
-            'INITIAL_APPROVER'
-        ],
     ];
 
     public function action(Request $request, Contract $contract)
     {
         $data = $request->validate([
-            'action'     => 'required|in:forward,approve,return,reject',
+            'action'     => 'required|in:forward,return,reject',
             'return_to'  => 'nullable|string',
             'remarks'    => 'nullable|string',
         ]);
@@ -141,13 +122,6 @@ class ContractApprovalController extends Controller
 
             case 'forward':
                 $nextStatus = $this->getForwardStatus($role);
-                break;
-
-            case 'approve':
-                if ($role !== 'FINAL_APPROVER') {
-                    abort(403);
-                }
-                $nextStatus = 'APPROVED';
                 break;
 
             case 'return':
@@ -219,14 +193,6 @@ class ContractApprovalController extends Controller
             );
         }
 
-        if ($data['action'] === 'approve') {
-            $this->notifyUser(
-                $contract->uploader,
-                $contract,
-                "Your contract has been fully approved."
-            );
-        }
-
         return back()->with('success', 'Action saved successfully.');
     }
 
@@ -238,8 +204,7 @@ class ContractApprovalController extends Controller
         return match ($role) {
             'REVIEWER'         => 'REVIEWED',
             'INITIAL_VERIFIER' => 'INITIAL_VERIFICATION',
-            'FINAL_VERIFIER'   => 'FINAL_VERIFICATION',
-            'INITIAL_APPROVER' => 'INITIAL_APPROVAL',
+            'FINAL_VERIFIER'   => 'APPROVED',
             default            => abort(403),
         };
     }

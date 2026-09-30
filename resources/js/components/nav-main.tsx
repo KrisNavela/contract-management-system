@@ -22,7 +22,7 @@ export function NavMain({ items }: Props) {
     }, [isCollapsed])
 
     return (
-        <nav className="space-y-1 px-2">
+            <nav className="space-y-1.5 px-2">
             {items.map((item) => {
                 const isActive =
                     item.href && url.startsWith(item.href.toString())
@@ -47,8 +47,7 @@ export function NavMain({ items }: Props) {
                                         toggleSidebar()
                                     }
                                 }}
-                                className={`flex w-full items-center justify-between h-9
-                                    rounded-md px-3 text-sm font-medium transition
+                                className={`flex h-10 w-full items-center justify-between rounded-xl px-3 text-sm font-medium transition
                                     ${
                                         isActive
                                             ? 'bg-emerald-50 text-emerald-700'
@@ -77,8 +76,7 @@ export function NavMain({ items }: Props) {
                                         setOpenMenu(isOpen ? null : item.title)
                                     }
                                 }}
-                                    className={`flex w-full items-center justify-between h-9 
-                                        rounded-md px-3 text-sm font-medium transition
+                                    className={`flex h-10 w-full items-center justify-between rounded-xl px-3 text-sm font-medium transition
                                         ${
                                             isParentActive
                                                 ? 'bg-emerald-50 text-emerald-700'
@@ -100,7 +98,7 @@ export function NavMain({ items }: Props) {
                                 </button>
 
                                 {isOpen && (
-                                    <div className="mt-1 space-y-1 pl-10">
+                                    <div className="mt-1 space-y-1 border-l border-emerald-100 pl-10">
                                         {item.children.map((child) => {
                                             const isChildActive =
                                                 child.href &&
@@ -112,7 +110,7 @@ export function NavMain({ items }: Props) {
                                                 <Link
                                                     key={child.title}
                                                     href={child.href!}
-                                                    className={`block rounded-md px-3 py-1.5 text-sm transition
+                                                    className={`block rounded-lg px-3 py-2 text-sm transition
                                                         ${
                                                             isChildActive
                                                                 ? 'bg-emerald-50 text-emerald-700 font-medium'

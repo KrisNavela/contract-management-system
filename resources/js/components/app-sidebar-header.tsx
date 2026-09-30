@@ -26,10 +26,6 @@ export function AppSidebarHeader({
             ? '/queue/initial-verifier'
             : role === 'FINAL_VERIFIER'
             ? '/queue/final-verifier'
-            : role === 'INITIAL_APPROVER'
-            ? '/queue/initial-approver'
-            : role === 'FINAL_APPROVER'
-            ? '/queue/final-approver'
             : '/contracts'
 
     /* ================= CLOSE ON OUTSIDE CLICK ================= */
@@ -44,20 +40,22 @@ export function AppSidebarHeader({
     }, [])
 
     return (
-        <header className="flex h-16 items-center justify-between border-b px-6 md:px-4">
+        <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-slate-200/80 bg-white/85 px-4 shadow-sm backdrop-blur md:px-6">
             {/* LEFT */}
             <div className="flex items-center gap-2">
-                <SidebarTrigger className="-ml-1" />
-                <Breadcrumbs breadcrumbs={breadcrumbs} />
+                <SidebarTrigger className="-ml-1 rounded-lg text-slate-500 hover:bg-emerald-50 hover:text-emerald-700" />
+                <div className="rounded-lg border border-slate-200 bg-slate-50/80 px-3 py-1.5">
+                    <Breadcrumbs breadcrumbs={breadcrumbs} />
+                </div>
             </div>
 
             {/* RIGHT */}
             <div ref={ref} className="relative">
                 <button
                     onClick={() => setOpen(!open)}
-                    className="relative rounded-md p-1 hover:bg-gray-100"
+                    className="relative rounded-xl border border-transparent p-2 text-slate-500 transition hover:border-emerald-100 hover:bg-emerald-50 hover:text-emerald-700"
                 >
-                    <Bell className="h-6 w-6 text-muted-foreground hover:text-foreground" />
+                    <Bell className="h-5 w-5" />
 
                     {pendingApprovalCount > 0 && (
                         <span className="absolute -top-1 -right-1 flex h-4 min-w-[16px]
@@ -72,9 +70,14 @@ export function AppSidebarHeader({
 
                 {/* ================= DROPDOWN ================= */}
                 {open && (
-                    <div className="absolute right-0 mt-2 w-80 rounded-md border bg-white shadow-lg z-50">
-                        <div className="border-b px-4 py-2 text-sm font-semibold">
-                            Pending Actions
+                    <div className="absolute right-0 z-50 mt-3 w-80 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl shadow-slate-900/10">
+                        <div className="border-b bg-slate-50/80 px-4 py-3">
+                            <p className="text-sm font-semibold text-slate-900">
+                                Pending Actions
+                            </p>
+                            <p className="mt-0.5 text-xs text-slate-500">
+                                Items that need your attention
+                            </p>
                         </div>
 
                         <ul className="max-h-64 overflow-auto divide-y">
@@ -83,7 +86,7 @@ export function AppSidebarHeader({
                                 <li key={`${item.type}-${item.id}`}>
                                     <Link
                                         href={item.url}
-                                        className="block px-4 py-3 hover:bg-gray-50"
+                                        className="block px-4 py-3 transition hover:bg-emerald-50/60"
                                         onClick={() => setOpen(false)}
                                     >
                                         <p className="text-sm font-medium">
@@ -107,7 +110,7 @@ export function AppSidebarHeader({
                         </ul>
 
                         {/* ================= FOOTER ================= */}
-                        <div className="border-t px-4 py-2 text-center">
+                        <div className="border-t bg-slate-50/50 px-4 py-3 text-center">
                             <Link
                                 href={contractQueueLink}
                                 className="text-sm font-medium text-blue-600 hover:underline"

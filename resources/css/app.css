@@ -126,19 +126,10 @@
     }
 }
 
-/* =====================================================
-   COMPANY BRAND HOVER (KEEPING WHAT YOU LIKED)
-   ===================================================== */
-
+/* Keep navigation transitions subtle and consistent with the CMS theme. */
 [data-sidebar] a,
 [data-sidebar] button {
-    transition: background-color 150ms ease, color 150ms ease;
-}
-
-[data-sidebar] a:hover,
-[data-sidebar] button:hover {
-    background-color: #1F7A5A;
-    color: #ffffff;
+    transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
 }
 
 @theme inline {
