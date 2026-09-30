@@ -79,7 +79,7 @@ export default function Dashboard() {
                         <DashboardCard label="Total" value={contractCounts.total ?? 0} accent="emerald" icon={<FileText className="size-5" />} href="/contracts" />
                         <DashboardCard label="Pending" value={contractCounts.pending ?? 0} accent="amber" icon={<Clock3 className="size-5" />} href="/contracts?pending=1" />
                         <DashboardCard label="Approved" value={contractCounts.approved ?? 0} accent="green" icon={<CheckCircle2 className="size-5" />} href="/contracts?status=APPROVED" />
-                        <DashboardCard label="Returned" value={contractCounts.returned ?? 0} accent="red" icon={<RotateCcw className="size-5" />} href="/contracts?status=RETURNED" />
+                        <DashboardCard label="Returned / Rejected" value={contractCounts.returned ?? 0} accent="red" icon={<RotateCcw className="size-5" />} href="/contracts?outcome=returned" />
                     </ModuleSection>
                 )}
 

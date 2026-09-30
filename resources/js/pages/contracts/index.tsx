@@ -86,6 +86,7 @@ interface Props {
         transaction_no?: string
         status?: string
         pending?: string
+        outcome?: string
         execution?: string
         branch_id?: string
     }
@@ -120,7 +121,9 @@ export default function Index({
     const isBranch = authUser?.role === 'BRANCH'
     const [search, setSearch] = useState(filters?.transaction_no ?? '')
 
-    const breadcrumbTitle = filters?.pending === '1'
+    const breadcrumbTitle = filters?.outcome === 'returned'
+        ? 'Returned / Rejected Contracts'
+        : filters?.pending === '1'
         ? 'Pending Contracts'
         : filters?.status
         ? `${filters.status.replaceAll('_', ' ')} Contracts`

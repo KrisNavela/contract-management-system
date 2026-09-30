@@ -462,8 +462,9 @@ export default function Show({ contract }: Props) {
                 )}
 
                 {/* ================= EXECUTION UPLOAD ================= */}
-                {auth?.user?.role === 'BRANCH' &&
-                    auth?.user?.id === contract.uploaded_by &&
+                {(auth?.user?.role === 'REVIEWER' ||
+                    (auth?.user?.role === 'BRANCH' &&
+                        auth?.user?.id === contract.uploaded_by)) &&
                     contract.status === 'APPROVED' &&
                     !contract.execution_file_path && (
                         <div className="rounded-xl border bg-white p-6 shadow-sm">

@@ -48,6 +48,11 @@ class ContractController extends Controller
             $query->whereNotIn('status', ['APPROVED', 'RETURNED', 'REJECTED']);
         }
 
+        /* ================= FILTER: RETURNED / REJECTED ================= */
+        if ($request->input('outcome') === 'returned') {
+            $query->whereIn('status', ['RETURNED', 'REJECTED']);
+        }
+
         /* ================= FILTER: EXECUTION STATUS ================= */
         if ($request->filled('execution')) {
             if ($request->execution === 'uploaded') {
@@ -123,6 +128,7 @@ class ContractController extends Controller
                 'transaction_no',
                 'status',
                 'pending',
+                'outcome',
                 'execution',
                 'branch_id',
             ]),
@@ -421,10 +427,14 @@ class ContractController extends Controller
 
     public function uploadExecutionDocument(Request $request, Contract $contract)
     {
-        // 🔒 Role + Status Guard
+        $user = auth()->user();
+        $isReviewer = $user->role === 'REVIEWER';
+        $isRequestor = $user->role === 'BRANCH'
+            && $contract->uploaded_by === $user->id;
+
+        // Reviewers can upload for any approved contract; branch users only their own.
         if (
-            auth()->user()->role !== 'BRANCH' ||
-            $contract->uploaded_by !== auth()->id() ||
+            (!$isReviewer && !$isRequestor) ||
             $contract->status !== 'APPROVED'
         ) {
             abort(403);
@@ -456,8 +466,8 @@ class ContractController extends Controller
         // 📝 Audit remark
         $contract->remarks()->create([
             'action' => 'execution_uploaded',
-            'remarks' => 'Execution document uploaded by branch.',
-            'user_id' => auth()->id(),
+            'remarks' => 'Execution document uploaded after final verification.',
+            'user_id' => $user->id,
         ]);
 
         return back()->with('success', 'Execution document uploaded successfully.');
