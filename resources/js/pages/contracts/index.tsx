@@ -15,11 +15,9 @@ import {
     Pagination,
     PaginationContent,
     PaginationItem,
-    PaginationLink,
-    PaginationPrevious,
-    PaginationNext,
 } from '@/components/ui/pagination'
-import { useState, useEffect } from 'react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
 
 /* ================= TYPES ================= */
 
@@ -120,6 +118,7 @@ export default function Index({
     const authUser = page.props?.auth?.user
     const isBranch = authUser?.role === 'BRANCH'
     const [search, setSearch] = useState(filters?.transaction_no ?? '')
+    const previousSearch = useRef(search)
 
     const breadcrumbTitle = filters?.outcome === 'returned'
         ? 'Returned / Rejected Contracts'
@@ -134,6 +133,11 @@ export default function Index({
     ]
 
     useEffect(() => {
+        if (previousSearch.current === search) {
+            return
+        }
+        previousSearch.current = search
+
         const delay = setTimeout(() => {
             router.get(
                 '/contracts',
@@ -433,14 +437,17 @@ export default function Index({
                                 if (link.label.includes('Previous')) {
                                     return (
                                         <PaginationItem key={index}>
-                                            <PaginationPrevious
+                                            <Link
                                                 href={link.url ?? '#'}
+                                                preserveState
+                                                preserveScroll
                                                 className={
-                                                    !link.url
-                                                        ? 'pointer-events-none opacity-50'
-                                                        : ''
+                                                    `inline-flex h-9 items-center gap-1 rounded-md px-3 text-sm hover:bg-gray-100 ${!link.url ? 'pointer-events-none opacity-50' : ''}`
                                                 }
-                                            />
+                                            >
+                                                <ChevronLeft className="size-4" />
+                                                <span>Previous</span>
+                                            </Link>
                                         </PaginationItem>
                                     )
                                 }
@@ -448,26 +455,32 @@ export default function Index({
                                 if (link.label.includes('Next')) {
                                     return (
                                         <PaginationItem key={index}>
-                                            <PaginationNext
+                                            <Link
                                                 href={link.url ?? '#'}
+                                                preserveState
+                                                preserveScroll
                                                 className={
-                                                    !link.url
-                                                        ? 'pointer-events-none opacity-50'
-                                                        : ''
+                                                    `inline-flex h-9 items-center gap-1 rounded-md px-3 text-sm hover:bg-gray-100 ${!link.url ? 'pointer-events-none opacity-50' : ''}`
                                                 }
-                                            />
+                                            >
+                                                <span>Next</span>
+                                                <ChevronRight className="size-4" />
+                                            </Link>
                                         </PaginationItem>
                                     )
                                 }
 
                                 return (
                                     <PaginationItem key={index}>
-                                        <PaginationLink
+                                        <Link
                                             href={link.url ?? '#'}
-                                            isActive={link.active}
+                                            preserveState
+                                            preserveScroll
+                                            aria-current={link.active ? 'page' : undefined}
+                                            className={`inline-flex size-9 items-center justify-center rounded-md text-sm hover:bg-gray-100 ${link.active ? 'border border-gray-300 font-semibold' : ''}`}
                                         >
                                             {link.label}
-                                        </PaginationLink>
+                                        </Link>
                                     </PaginationItem>
                                 )
                             })}
